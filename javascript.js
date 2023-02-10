@@ -73,7 +73,6 @@ function showPopUp() {
   DOM.result.style.transition = "height 1s, width 1s, opacity 0s";
   DOM.resultText.style.display = "inline-block";
   DOM.againBtn.style.display = "inline-block";
-
 }
 
 function hidePopUp() {
@@ -93,6 +92,8 @@ const gameBoard = (() => {
   let gameEnd = false;
 
   const reset = () => {
+    // Set all values of the array to undefined
+    // so we can render a blank board
     for (let i = 0; i < gameBoard.board.length; i++) {
       gameBoard.board[i] = undefined;
     }
@@ -110,7 +111,9 @@ const gameBoard = (() => {
 })();
 
 const renderBoard = (() => {
-  const render = (reset) => {
+  // This render loop will draw every content from the array
+  // into each button as a text.
+  const render = () => {
     for (let i = 0; i < gameBoard.board.length; i++) {
       DOM.spotBtn[i].textContent = gameBoard.board[i];
     }
@@ -197,7 +200,9 @@ const whoWon = (() => {
         }
       } 
     }
-    if (!gameBoard.board.includes(undefined) && !gameBoard.gameBoard) {
+    if (!gameBoard.board.includes(undefined) && !gameBoard.gameEnd) {
+      // make sure there are no more undefined values in the array
+      // and make sure the game did not end with a winner before
       gameBoard.gameEnd = true;
       DOM.resultText.textContent = "Nobody won! \r\n";
       DOM.resultText.textContent += "It's a draw!";
