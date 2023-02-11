@@ -3,15 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tic Tac Toe</title>
     <link rel="stylesheet" href="style.css" />
     <script src="javascript.js" defer></script>
   </head>
   <body>
-    <div id="result">
-      <div id="resultText"></div>
-      <button id="playAgain" type="button">Play again?</button>
+    <div class="popUp" id="settings">
+      <div class="popUpText" id="settingsText">
+        <label for="name">Add your name:</label>
+        <input type="text" id="name" name="name" onkeyup=DOM.handleInput(this)>
+      </div>
+      <button class="popUpButton" id="settingsBtn" type="button">
+        Start
+      </button>
+    </div>
+    <div class="popUp" id="result">
+      <div class="popUpText" id="resultText"></div>
+      <button class="popUpButton" id="playAgain" type="button">
+        Play again?
+      </button>
     </div>
     <div id="content">
       <div id="scoreBoard">

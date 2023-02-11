@@ -93,10 +93,11 @@ body {
   outline: orange 5px auto;
 }
 
-#result {
+.popUp {
   display: grid;
   position: fixed;
   align-content: center;
+  place-content: center;
   text-align: center;
   line-height: 2.5em;
   bottom: -50%;
@@ -115,12 +116,14 @@ body {
   transition: height 1s, width 1s, opacity 0s 1s;
 }
 
-#resultText {
+.popUpText {
   display: none;
+  font-size: 1.3em;
+  
   white-space: pre;
 }
 
-#playAgain {
+.popUpButton {
   display: none;
   margin: 0vh 10vh 0 10vh; 
   padding: 1em;
@@ -129,6 +132,11 @@ body {
   border-radius: 20px;
   background-color: transparent;
   font-size: inherit;
+}
+
+#name {
+  display: grid;
+  line-height: 2em;
 }
 
 @media only screen and (max-width: 600px) {

@@ -4,12 +4,16 @@ const DOM = (() => {
   const spotBtn = document.querySelectorAll(".spotBtn");
   const playerScore = document.getElementById("playerScore");
   const cpuScore = document.getElementById("cpuScore");
+  const settings = document.getElementById("settings");
+  const settingsText = document.getElementById("settingsText");
+  const startBtn = document.getElementById("settingsBtn");
   const result = document.getElementById("result");
   const againBtn = document.getElementById("playAgain");
   const resultText = document.getElementById("resultText");
 
   playerScore.textContent = "Player: 0";
   cpuScore.textContent = "CPU: 0";
+  const input = {};
 
   spotBtn.forEach((btn) => {
     btn.addEventListener("mousedown", (event) => {
@@ -55,41 +59,51 @@ const DOM = (() => {
     againBtn.style.transform = "none";
   });
 
+  function handleInput(event) {
+    input[event.name] = event.value;
+  }
+
+  startBtn.addEventListener("mousedown", (event) => {
+    againBtn.style.transform = "scale(0.9)";
+    if (input.name === undefined) {
+      input.name = "Player";
+    }
+    DOM.playerScore.textContent = `${input.name}: ${gameBoard.playerScore}`;
+    hideSettingsPopUp();
+  });
+
+  startBtn.addEventListener("touchstart", (event) => {
+    againBtn.style.transform = "scale(0.9)";
+    if (input.name === undefined) {
+      input.name = "Player";
+    }
+    DOM.playerScore.textContent = `${input.name}: ${gameBoard.playerScore}`;
+    hideSettingsPopUp();
+  });
+
   return {
     spots,
     spotBtn,
     playerScore,
     cpuScore,
     againBtn,
+    settings,
+    settingsText,
+    handleInput,
+    input,
+    startBtn,
     result,
     resultText,
   };
 })();
-
-function showPopUp() {
-  DOM.result.style.opacity = "1";
-  DOM.result.style.width = "70%";
-  DOM.result.style.height = "70%";
-  DOM.result.style.transition = "height 1s, width 1s, opacity 0s";
-  DOM.resultText.style.display = "inline-block";
-  DOM.againBtn.style.display = "inline-block";
-}
-
-function hidePopUp() {
-  DOM.result.style.opacity = "0";
-  DOM.result.style.width = "0";
-  DOM.result.style.height = "0";
-  DOM.result.style.transition = "height 1s, width 1s, opacity 1s";
-  DOM.resultText.style.display = "none";
-  DOM.againBtn.style.display = "none";
-}
 
 const gameBoard = (() => {
   board = [];
   board.length = 9;
   let playerScore = 0;
   let cpuScore = 0;
-  let gameEnd = false;
+  let gameOver = false;
+  showSettingsPopUp();
 
   const reset = () => {
     // Set all values of the array to undefined
@@ -97,9 +111,9 @@ const gameBoard = (() => {
     for (let i = 0; i < gameBoard.board.length; i++) {
       gameBoard.board[i] = undefined;
     }
-    gameBoard.gameEnd = false;
+    gameBoard.gameOver = false;
     renderBoard.render();
-    hidePopUp();
+    hideResultPopUp();
   };
 
   return {
@@ -109,6 +123,42 @@ const gameBoard = (() => {
     reset,
   };
 })();
+
+function showSettingsPopUp() {
+  DOM.settings.style.opacity = "1";
+  DOM.settings.style.width = "70%";
+  DOM.settings.style.height = "70%";
+  DOM.settings.style.transition = "height 1s, width 1s, opacity 0s";
+  DOM.settingsText.style.display = "grid";
+  DOM.startBtn.style.display = "grid";
+}
+
+function hideSettingsPopUp() {
+  DOM.settings.style.opacity = "0";
+  DOM.settings.style.width = "0";
+  DOM.settings.style.height = "0";
+  DOM.settings.style.transition = "height 1s, width 1s, opacity 1s";
+  DOM.settingsText.style.display = "none";
+  DOM.startBtn.style.display = "none";
+}
+
+function showResultPopUp() {
+  DOM.result.style.opacity = "1";
+  DOM.result.style.width = "70%";
+  DOM.result.style.height = "70%";
+  DOM.result.style.transition = "height 1s, width 1s, opacity 0s";
+  DOM.resultText.style.display = "inline-block";
+  DOM.againBtn.style.display = "inline-block";
+}
+
+function hideResultPopUp() {
+  DOM.result.style.opacity = "0";
+  DOM.result.style.width = "0";
+  DOM.result.style.height = "0";
+  DOM.result.style.transition = "height 1s, width 1s, opacity 1s";
+  DOM.resultText.style.display = "none";
+  DOM.againBtn.style.display = "none";
+}
 
 const renderBoard = (() => {
   // This render loop will draw every content from the array
@@ -155,11 +205,11 @@ const whoWon = (() => {
           (i !== 5 && i + 1 !== 6 && i + 2 !== 7)
         ) {
           gameBoard.playerScore += 1;
-          gameBoard.gameEnd = true;
-          DOM.playerScore.textContent = `Player: ${gameBoard.playerScore}`;
+          gameBoard.gameOver = true;
+          DOM.playerScore.textContent = `${DOM.input.name}: ${gameBoard.playerScore}`;
           DOM.resultText.textContent = "Congratulations! \r\n";
           DOM.resultText.textContent += "You won!"
-          showPopUp();
+          showResultPopUp();
         }
       }
 
@@ -192,21 +242,22 @@ const whoWon = (() => {
           (i !== 5 && i + 1 !== 6 && i + 2 !== 7)
         ) {
           gameBoard.cpuScore += 1;
-          gameBoard.gameEnd = true;
+          gameBoard.gameOver = true;
           DOM.cpuScore.textContent = `CPU: ${gameBoard.cpuScore}`;
+          DOM.playerScore.textContent = `${DOM.input.name}: ${gameBoard.playerScore}`;
           DOM.resultText.textContent = "Too bad! \r\n";
           DOM.resultText.textContent += "You lost!";
-          showPopUp();
+          showResultPopUp();
         }
       } 
     }
-    if (!gameBoard.board.includes(undefined) && !gameBoard.gameEnd) {
+    if (!gameBoard.board.includes(undefined) && !gameBoard.gameOver) {
       // make sure there are no more undefined values in the array
       // and make sure the game did not end with a winner before
-      gameBoard.gameEnd = true;
+      gameBoard.gameOver = true;
       DOM.resultText.textContent = "Nobody won! \r\n";
       DOM.resultText.textContent += "It's a draw!";
-      showPopUp();
+      showResultPopUp();
     }
   };
 
@@ -215,14 +266,14 @@ const whoWon = (() => {
 
 const playerAction = (event) => {
   let e = event.target.id;
-  if (gameBoard.board[e] === undefined && !gameBoard.gameEnd) {
+  if (gameBoard.board[e] === undefined && !gameBoard.gameOver) {
     gameBoard.board[e] = "X";
     DOM.spotBtn[e].style.color = "blue";
-    if (gameBoard.board.includes(undefined)) {
+    whoWon.winner();
+    if (gameBoard.board.includes(undefined) && !gameBoard.gameOver) {
       cpuAction(getRandom());
     }
     renderBoard.render();
-    whoWon.winner();
   }
 };
 
